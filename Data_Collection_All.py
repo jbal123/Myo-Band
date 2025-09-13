@@ -202,7 +202,7 @@ class Plot(object):
 def main():
   myo.init()
   hub = myo.Hub()
-  listener = Collector(512)
+  listener = Collector(512) #The value 512 refers to the frequency of the device. Adjusting up or down can change the quantity of data available.
   try:
     with hub.run_in_background(listener.on_event):
       Plot(listener).main()
@@ -214,4 +214,5 @@ def main():
 
 
 if __name__ == '__main__':
+
   main()
