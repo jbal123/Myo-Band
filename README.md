@@ -16,6 +16,6 @@ A few key notes for any future researchers:
 
 4. Current versions of Python do not work with the myo-python library, which was built for Python 3.8 (when support for the package was dropped). Therefore, the latest version of Python used for any data collection should be 3.8. This is a simple fix, as all Python versions are available, and the only change necessary is to specify "Python 3.8" as the version to use in your IDE of choice (I used PyCharm for this project, which I can highly recommend).
 
-5. The necessary DLL file must be specified as the "32-bit" option, NOT the "64-bit" (which is also present in the bin folder of the myo package). See the code for usage.
+5. The necessary DLL file must be specified as the "32-bit" option, NOT the "64-bit" (which is also present in the bin folder of the myo package). In my instance, I deleted the file titled "myo64.dll," present in the bin folder of the myo-sdk-win file, as dependency issues arose when the file was present. See the code for usage.
 
 Good Luck!
