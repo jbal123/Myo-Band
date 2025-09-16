@@ -18,4 +18,6 @@ A few key notes for any future researchers:
 
 5. The necessary DLL file must be specified as the "32-bit" option, NOT the "64-bit" (which is also present in the bin folder of the myo package). In my instance, I deleted the file titled "myo64.dll," present in the bin folder of the myo-sdk-win file, as dependency issues arose when the file was present. See the code for usage.
 
+6. The particular IDE I used for this project, PyCharm, has a built-in feature for installing packages locally. I recommend using PyCharm for its ease of use. For reference, I installed the "myo-python" package in PyCharm, along with any others mentioned in the code of format: "import _____"
+
 Good Luck!
