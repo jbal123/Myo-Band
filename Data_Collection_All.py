@@ -21,15 +21,15 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 
-import myo
+import myo #registered as myo-python on pycharm
 from ctypes import *
 cdll.LoadLibrary(r"C:\Users\User_Example\Downloads\myo-sdk-win-0.9.0\myo-sdk-win-0.9.0\bin\myo32.dll") #Replace User_Example with your computer's username
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt #package on pycharm
 from collections import deque
 from threading import Lock, Thread
-import numpy as np
+import numpy as np #package on pycharm
 import csv
-import pandas as pd
+import pandas as pd #package on pycharm
 import math
 
 def fig_open(fig):
@@ -37,9 +37,6 @@ def fig_open(fig):
 
 
 class Collector(myo.DeviceListener):
-  """
-  Collects EMG data in a queue with *n* maximum number of elements.
-  """
 
   def __init__(self, n):
     self.n = n
@@ -60,20 +57,21 @@ class Collector(myo.DeviceListener):
     self.data = [self.full_emg_log, self.full_accel_log, self.full_gyro_log]
     self.filename = ['emg_log.csv', 'accel_log.csv', 'gyro_log.csv']
 
+    #filename and data array are created to make csv export easier.
 
   def get_emg_data(self):
     with self.lock:
-      print('got emg data')
+      #print('got emg data')
       return list(self.emg_data_queue)
 
   def get_accel_data(self):
     with self.lock:
-      print('got accel data')
+      #print('got accel data')
       return list(self.accel_data_queue)
 
   def get_gyro_data(self):
     with self.lock:
-      print('got gyro data')
+      #print('got gyro data')
       return list(self.gyro_data_queue)
 
   # myo.DeviceListener
@@ -86,6 +84,7 @@ class Collector(myo.DeviceListener):
     with self.lock:
       self.emg_data_queue.append((event.timestamp, event.emg))
       self.full_emg_log.append((event.timestamp, event.emg))
+    #Device is constantly collecting emg data, and returns the data every time it is called. Self.lock is always true while program is running.
 
   def on_orientation(self, event):
     with self.lock:
@@ -100,6 +99,8 @@ class Collector(myo.DeviceListener):
 
       self.gyro_data_queue.append((event.timestamp, np.array([event.gyroscope.x, event.gyroscope.y, event.gyroscope.z])))
       self.full_gyro_log.append((event.timestamp, np.array([event.gyroscope.x, event.gyroscope.y, event.gyroscope.z])))
+
+    #Again, self.lock is always true while running. Constant use of on_orientation for collection of acceleration and gyroscopic data
           
   def export_to_csv(self):
     with self.lock:
@@ -128,6 +129,7 @@ class Collector(myo.DeviceListener):
             df = pd.DataFrame(values, columns=[f"{'Sensor '}_{i}" for i in range(len_data_wo_timestamp)])
             df.insert(0, 'timestamp_ms', timestamps)
             df.to_csv(filename[x], index=False)
+        #From my understanding, to_csv saves the CSV file wherever the .py file is saved. Did not get a chance to test this theory.
 
 class Plot(object):
 
@@ -139,11 +141,15 @@ class Plot(object):
     self.fig_accel = plt.figure(num='Acceleration Data')
     self.fig_gyro = plt.figure(num='Gyro Data')
 
+    #creates 3 figures to chart
+
     self.figures = [self.fig_emg, self.fig_accel, self.fig_gyro]
 
     self.axes_emg = [self.fig_emg.add_subplot(int('81' + str(i))) for i in range(1, 9)]
-    [(ax.set_ylim([-100, 100])) for ax in self.axes_emg]
+    [(ax.set_ylim([-100, 100])) for ax in self.axes_emg] #Changing set.ylim changes the bounds of the graph in the y-axis
     self.graphs_emg = [ax.plot(np.arange(self.n), np.zeros(self.n))[0] for ax in self.axes_emg]
+
+    #sets up the rows in accordance with the data channels to be received
 
     self.axes_accel = [self.fig_accel.add_subplot(int('31' + str(i))) for i in range(1, 4)]
     [(ax.set_ylim([-3, 3])) for ax in self.axes_accel]
@@ -193,6 +199,7 @@ class Plot(object):
           self.update_plot_emg()
       if fig_open(self.figures[1]):
           self.update_plot_accel()
+    #runs continuously. Ensures that closing one figure to allow for smoother completion of other charts does not stall the program.
 
       plt.pause(1.0 / 30)
     print("Plotting and data collection finished.")
@@ -216,3 +223,4 @@ def main():
 if __name__ == '__main__':
 
   main()
+
